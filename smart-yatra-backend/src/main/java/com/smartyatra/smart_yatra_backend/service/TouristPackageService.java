@@ -4,6 +4,7 @@ import com.smartyatra.smart_yatra_backend.dto.CreatePackageRequest;
 import com.smartyatra.smart_yatra_backend.dto.PackageResponse;
 import com.smartyatra.smart_yatra_backend.entity.TouristPackage;
 import com.smartyatra.smart_yatra_backend.entity.User;
+import com.smartyatra.smart_yatra_backend.enums.Role;
 import com.smartyatra.smart_yatra_backend.exception.ApiException;
 import com.smartyatra.smart_yatra_backend.repository.TouristPackageRepository;
 import com.smartyatra.smart_yatra_backend.repository.UserRepository;
@@ -30,7 +31,7 @@ public class TouristPackageService {
         User host = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ApiException("Host user not found"));
 
-        if (!host.getRole().equals("HOST")) {
+        if (host.getRole() != Role.HOST) {
             throw new ApiException("Only users with HOST role can create packages");
         }
 
@@ -57,7 +58,7 @@ public class TouristPackageService {
         User host = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ApiException("Host not found"));
 
-        if (!host.getRole().equalsIgnoreCase("HOST")) {
+        if (host.getRole() != Role.HOST) {
             throw new ApiException("Only hosts can view their packages");
         }
 

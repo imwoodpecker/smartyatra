@@ -1,6 +1,7 @@
 package com.smartyatra.smart_yatra_backend.entity;
 
 
+import com.smartyatra.smart_yatra_backend.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -41,7 +41,7 @@ public class AuthenticationService {
                 .name(request.getName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole().toString())
+                .role(request.getRole())
                 .build();
 
         userRepository.save(user);
@@ -66,7 +66,7 @@ public class AuthenticationService {
         }
 
         if (request.getRole() != null && (request.getRole() == Role.USER || request.getRole() == Role.HOST)) {
-            user.setRole(request.getRole().toString());
+            user.setRole(request.getRole());
         }
 
         userRepository.save(user);

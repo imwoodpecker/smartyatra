@@ -6,6 +6,7 @@ import com.smartyatra.smart_yatra_backend.dto.RoleChangeResponse;
 import com.smartyatra.smart_yatra_backend.dto.UserSummaryDto;
 import com.smartyatra.smart_yatra_backend.entity.TouristPackage;
 import com.smartyatra.smart_yatra_backend.entity.User;
+import com.smartyatra.smart_yatra_backend.enums.Role;
 import com.smartyatra.smart_yatra_backend.exception.ApiException;
 import com.smartyatra.smart_yatra_backend.repository.FavoriteDestinationRepository;
 import com.smartyatra.smart_yatra_backend.repository.TouristPackageRepository;
@@ -35,14 +36,14 @@ public class AdminService {
                         u.getId(),
                         u.getName(),
                         u.getEmail(),
-                        u.getRole()
+                        u.getRole().name()
                 ))
                 .collect(Collectors.toList());
     }
 
     public List<UserSummaryDto> getAllHosts() {
         return userRepository.findByRole("HOST").stream()
-                .map(user -> new UserSummaryDto(user.getId(), user.getName(), user.getEmail(), user.getRole()))
+                .map(user -> new UserSummaryDto(user.getId(), user.getName(), user.getEmail(), user.getRole().name()))
                 .toList();
     }
 
@@ -83,7 +84,7 @@ public class AdminService {
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                user.getRole()
+                user.getRole().name()
         );
     }
 
@@ -94,17 +95,17 @@ public RoleChangeResponse changeUserRole(Long userId) {
     User user = userRepository.findById(userId)
             .orElseThrow(() -> new ApiException("User not found with ID: " + userId));
 
-    String currentRole = user.getRole();
+    Role currentRole = user.getRole();
 
-    if (currentRole.equals("ADMIN")) {
+    if (currentRole == Role.ADMIN) {
         throw new ApiException("Cannot change role of an ADMIN user");
     }
 
-    String newRole = currentRole.equals("USER") ? "HOST" : "USER";
+    Role newRole = currentRole == Role.USER ? Role.HOST : Role.USER;
     user.setRole(newRole);
     userRepository.save(user);
 
-    return new RoleChangeResponse(userId, currentRole, newRole, "Role updated successfully");
+    return new RoleChangeResponse(userId, currentRole.name(), newRole.name(), "Role updated successfully");
 }
 
 
